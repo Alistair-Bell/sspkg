@@ -1,5 +1,19 @@
 #include "inc.h"
 #include "args.h"
+#include "db.h"
+
+static const char *db_name = "master";
+
+
+static int8_t
+pkg_install(struct args_data *args)
+{
+	struct db d = { 0 };
+	if (db_open(db_name, &d) < 0) {
+		return -1;
+	}
+}
+
 
 int
 main(int argc, const char *argv[])
@@ -24,5 +38,12 @@ main(int argc, const char *argv[])
 		return 1;
 	}
 
+	switch (op.operation) {
+		case ARGS_OPERATION_INSTALL: {
+			pkg_install(&op);
+		}
+	}
+
 	free(op.pkgs);
+	return 0;
 }
