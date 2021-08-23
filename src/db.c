@@ -14,7 +14,7 @@ file_validation(char *buff, struct db *db)
 	}
 	
 	/* Check that it has at least X bytes. */
-	if (s.st_size < sizeof(db->header)) {
+	if (s.st_size < (off_t)sizeof(db->header)) {
 		fprintf(stderr, "sspkg: error database file %s header is too small, file may be corrupted or incomplete.\n", buff);
 		return -1;
 	}

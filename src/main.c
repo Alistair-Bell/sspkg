@@ -12,6 +12,7 @@ pkg_install(struct args_data *args)
 	if (db_open(db_name, &d) < 0) {
 		return -1;
 	}
+	return -1;
 }
 
 
@@ -41,6 +42,9 @@ main(int argc, const char *argv[])
 	switch (op.operation) {
 		case ARGS_OPERATION_INSTALL: {
 			pkg_install(&op);
+		}
+		default: {
+			break;
 		}
 	}
 

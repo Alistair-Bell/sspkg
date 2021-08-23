@@ -2,7 +2,7 @@
 
 #include "args.h"
 
-#define USAGE_STRING "hvlir"
+#define USAGE_STRING "hilrv"
 
 static int8_t 
 args_opt_error(struct args_data *in, enum args_operation update)
@@ -26,25 +26,25 @@ args_parse(int32_t argc, const char *argv[], struct args_data *in)
 			case 'h': {
 				return -2;
 			}
-			case 'v': {
-				args_msg_version();
-				return -1;
-			}
-			case 'l': {
-				args_msg_license();
-				return -1;
-			}
 			case 'i': {
 				if (args_opt_error(in, ARGS_OPERATION_INSTALL) < 0) {
 					return -2;
 				}
 				break;
 			}
+			case 'l': {
+				args_msg_license();
+				return -1;
+			}
 			case 'r': {
 				if (args_opt_error(in, ARGS_OPERATION_REMOVE) < 0) {
 					return -2;
 				}
 				break;
+			}
+			case 'v': {
+				args_msg_version();
+				return -1;
 			}
 			default: {
 				break;
@@ -73,7 +73,7 @@ args_parse(int32_t argc, const char *argv[], struct args_data *in)
 }
 void args_msg_help(void)
 {
-	fprintf(stdout, "sspkg: usage [-%s] [-h help] [-v version] [-l license] [-i install] [-r remove] [package].\n", USAGE_STRING);
+	fprintf(stdout, "sspkg: usage [-%s] [-h help] [-i install] [-l license] [-r remove] [-v version] [package].\n", USAGE_STRING);
 }
 void args_msg_version(void)
 {
