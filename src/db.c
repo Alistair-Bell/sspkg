@@ -59,10 +59,12 @@ db_write(struct db *db, struct pkg *write, uint32_t count)
 
 	size_t res = 0;
 	/* Firstly write the header. */
-	res += fwrite(&db->header, sizeof(db->header), 1, db->ref);
+	res += fwrite(h, sizeof(*h), 1, db->ref);
 
-	/* Write the packages. */
-	/* res += fwrite(write, sizeof(uint8_t), sizeof(*write) * count, db->ref);*/
+	/* Write the packages, offsetting the stream after the header. */
+	fseek(db->ref, sizeof(*h), SEEK_SET);
+
+	res += fwrite(write, sizeof(uint8_t), sizeof(*write) * count, db->ref);
 	
 	if (res == 0) {
 		fprintf(stdout, "sspkg: error unable to write to database %s, writing errors have occured, code %d!\n", db->name, ferror(db->ref));
