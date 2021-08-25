@@ -2,63 +2,8 @@
 
 #define STR_BUFF 128
 
-/* Validates the format of the file. */
-static int8_t
-file_validation(char *buff, struct db *db)
-{
-	/* Check it exists. */
-	struct stat s;
-	if (stat(buff, &s) != 0) {
-		fprintf(stderr, "sspkg: error unable to find database file %s, does it exist!\n", buff);	
-		return -1;
-	}
-	
-	/* Check that it has at least X bytes. */
-	if (s.st_size < (off_t)sizeof(db->header)) {
-		fprintf(stderr, "sspkg: error database file %s header is too small, file may be corrupted or incomplete.\n", buff);
-		return -1;
-	}
-	
-	/* Firstly validate whether any user can acess the database file. */
-	if (~s.st_mode & S_IROTH) {
-		uid_t uid = getuid();
-		
-		/* Check that the running uid and file uid are the same, also check the current uid has read perms. */
-		if ((uid == s.st_uid) && (s.st_uid & S_IREAD)) {
-			goto read_file;
-		}
-		
-		/* Last resort check that the uid is in a readable group for the file. */
-		struct passwd *pw = getpwuid(uid);
-		if (pw == NULL) {
-			fprintf(stderr, "sspkg: error failed to get passwd for uid, other read checks failed, cannot open database %s.\n", buff);
-			return -1;
-		}
-
-		if ((pw->pw_gid == s.st_gid) && (s.st_uid & S_IRGRP)) {
-			goto read_file;
-		}
-		fprintf(stderr, "sspkg: read permission checks all failed for database %s, make sure you execute sspkg with database read permissions.\n", buff);
-		return -1;
-	}
-
-read_file:
-
-	/* Open the file for reading. */
-	db->ref = fopen(buff, "rb");
-
-	/* Set the read position to the start of the file. */
-	rewind(db->ref);
-
-	fread((void *)&db->header, sizeof(db->header), 1, db->ref);
-
-	fprintf(stdout, "sspkg: database header magic %ld\n", db->header.magic);
-
-	fclose(db->ref);
-	return 0;
-}
-
-int8_t db_open(const char *name, struct db *db)
+int8_t 
+db_open(struct db *db, const char *name, const char *md)
 {
 	/* Format the lookup for the file. */
 	char buff[STR_BUFF + 1] = { 0 };
@@ -76,15 +21,60 @@ int8_t db_open(const char *name, struct db *db)
 	buff[size] = '\0';
 
 	/* Validate the file supplied is valid. */
-	if (file_validation(buff, db) < 0) {
-		return -1;
+	int8_t res = (strcmp(md, "rb") == 0) ? perms_valid_read(buff) : perms_valid_write(buff);
+
+	/* Handle the result. */
+	switch (res) {
+		case -1: {
+			fprintf(stdout, "sspkg: error unable to find database file %s, does it exist?\n", buff);
+			return -1;
+		}
+		case -2: {
+			fprintf(stdout, "sspkg: error unable to retrive current uid groups, cannot validate correct permissions.\n");
+			return -1;
+		}
+		case -3: {
+			fprintf(stdout, "sspkg: error cannot read/write to database %s, all permission checks failed, check you have correct access rights!\n", buff);
+			return -1;
+		}
+		/* All perms are correct, carry on with operation. */
+		default: {
+		}
 	}
-	
+
+	db->ref = fopen(buff, md);
 	return 0;
 }
-void db_close(struct db *db)
+int8_t
+db_write(struct db *db, struct pkg *write, uint32_t count)
 {
+	/* This function assumes that it is in rb mode. */
 
+	/* Format the header. */
+	struct db_header *h = &db->header;
+
+	h->magic     = (uint64_t)DB_MAGIC_BYTES;
+	h->ver       = DB_FORMAT_VER;
+	h->pkg_count = count;
+
+	size_t res = 0;
+	/* Firstly write the header. */
+	res += fwrite(&db->header, sizeof(db->header), 1, db->ref);
+
+	/* Write the packages. */
+	/* res += fwrite(write, sizeof(uint8_t), sizeof(*write) * count, db->ref);*/
+	
+	if (res == 0) {
+		fprintf(stdout, "sspkg: error unable to write to database %s, writing errors have occured, code %d!\n", db->name, ferror(db->ref));
+	}
+	return 1;
+}
+void 
+db_close(struct db *db)
+{
+	if (db->ref != NULL) {
+		fclose(db->ref);
+	}
 }
 
 

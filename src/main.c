@@ -9,9 +9,11 @@ static int8_t
 pkg_install(struct args_data *args)
 {
 	struct db d = { 0 };
-	if (db_open(db_name, &d) < 0) {
+	if (db_open(&d, db_name, "rb") < 0) {
 		return -1;
 	}
+
+	db_close(&d);
 	return -1;
 }
 
