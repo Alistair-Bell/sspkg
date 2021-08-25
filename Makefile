@@ -22,6 +22,12 @@ ${OUT}: ${OBJECTS}
 ${BS_OUT}: ${BS_OBJECTS}
 	$(CC) -o $@ ${BS_OBJECTS}
 
+install: all
+	install -m755 -s ${OUT} /usr/local/bin
+
+uninstall:
+	rm /usr/local/bin/${OUT}
+
 clean:
 	rm ${OUT}
 	rm ${BS_OUT}

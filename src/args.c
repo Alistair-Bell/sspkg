@@ -53,8 +53,8 @@ args_parse(int32_t argc, const char *argv[], struct args_data *in)
 	}
 	/* Check if a package is supplied. */
 	if ((argc - optind) == 0) {
-		fprintf(stderr, "sspkg: error please supply at least a single package to install!\n");
-		return -1;
+		fprintf(stderr, "sspkg: error please supply at least a single package to operate on!\n");
+		return -2;
 	}
 
 	/* Check for a single operation that has been supplied. */

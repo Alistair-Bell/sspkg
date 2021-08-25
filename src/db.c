@@ -30,10 +30,14 @@ db_open(struct db *db, const char *name, const char *md)
 			return -1;
 		}
 		case -2: {
-			fprintf(stdout, "sspkg: error unable to retrive current uid groups, cannot validate correct permissions.\n");
+			fprintf(stdout, "sspkg: error specified database is a directory, a file is required.\n");
 			return -1;
 		}
 		case -3: {
+			fprintf(stdout, "sspkg: error unable to retrive current uid groups, cannot validate correct permissions.\n");
+			return -1;
+		}
+		case -4: {
 			fprintf(stdout, "sspkg: error cannot read/write to database %s, all permission checks failed, check you have correct access rights!\n", buff);
 			return -1;
 		}

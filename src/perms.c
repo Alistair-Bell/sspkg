@@ -9,8 +9,14 @@ perms_valid(const char *path, const uint16_t owm, const uint16_t grm, const uint
 		return -1;
 	}
 
+
 	/* Handy var. */
 	register mode_t m = s.st_mode;
+
+	/* Check that it is not a directory, will break the fopen and subsiquent calls. */
+	if (S_ISDIR(m)) {
+		return -2;
+	}
 
 	/* Firstly validate that others can access using the mask. */
 	if (~m & otm) {
@@ -25,11 +31,11 @@ perms_valid(const char *path, const uint16_t owm, const uint16_t grm, const uint
 		/* Last resort check common groups with current uid. */
 		struct passwd *pw = getpwuid(uid);
 		if (pw == NULL) {
-			return -2;
+			return -3;
 		}
 		
 		/* Returns -3 on all checks have failed. */
-		return (pw->pw_gid == s.st_gid && m & grm) ? 0 : -3;
+		return (pw->pw_gid == s.st_gid && m & grm) ? 0 : -4;
 	}
 	return 0;
 }
