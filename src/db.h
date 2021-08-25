@@ -13,7 +13,7 @@
 
 
 /* Required starting magic. */
-#define DB_MAGIC_BYTES 0x5353504b47444200
+#define DB_MAGIC_BYTES "SSPKG"
 /* Current format revision. */
 #define DB_FORMAT_VER 1
 
@@ -32,7 +32,7 @@
 /* Describes the first X bytes of the database file. */
 struct db_header {
 	/* Magic 8 bytes used to identify the version. */
-	uint64_t magic;
+	char magic[8];
 	/* Revision of the binary format. */
 	uint32_t ver;
 	/* Amount of packages contained. */
@@ -55,7 +55,7 @@ struct pkg {
 };
 
 int8_t db_open(struct db *, const char *, const char *);
-uint32_t db_load(struct db *, struct pkg **);
+int8_t db_read(struct db *, struct pkg **, uint32_t *);
 int8_t db_write(struct db *, struct pkg *, uint32_t);
 void db_close(struct db *);
 

@@ -5,6 +5,9 @@
 int8_t 
 db_open(struct db *db, const char *name, const char *md)
 {
+	/* Store the name in the db struct, only used for messaging. */
+	db->name = name;
+
 	/* Format the lookup for the file. */
 	char buff[STR_BUFF + 1] = { 0 };
 
@@ -50,14 +53,41 @@ db_open(struct db *db, const char *name, const char *md)
 	return 0;
 }
 int8_t
+db_read(struct db *db, struct pkg **load, uint32_t *count)
+{
+	register struct db_header *h = &db->header;
+
+	/* The header of the database tells the loader how many packages to load. */
+	rewind(db->ref);
+	fread(h, sizeof(*h), 1, db->ref);
+	*count = h->pkg_count;
+	
+	/* Check the validity of the database. */
+	if (strcmp(db->header.magic, DB_MAGIC_BYTES) != 0) {
+		fprintf(stderr, "sspkg: error database %s is not a database file, invalid magic 8 bytes, data may be corrupted!\n", db->name);
+		return -1;
+	}
+	
+	/* Return if zero packages are present. */
+	if (h->pkg_count <= 0) {
+		fprintf(stderr, "sspkg: warning database %s has no packages.\n", db->name);
+		return 0;
+	}
+
+	/* Allocate the required memory that the packages require. */
+	*load = calloc(*count, sizeof(*(*load)));
+	fseek(db->ref, sizeof(*h), SEEK_SET);
+	fread(*load, sizeof(*(*load)) * h->pkg_count, 1, db->ref);
+	return 0;
+}
+int8_t
 db_write(struct db *db, struct pkg *write, uint32_t count)
 {
 	/* This function assumes that it is in rb mode. */
 
 	/* Format the header. */
 	struct db_header *h = &db->header;
-
-	h->magic     = (uint64_t)DB_MAGIC_BYTES;
+	strncpy(h->magic, DB_MAGIC_BYTES, 8);
 	h->ver       = DB_FORMAT_VER;
 	h->pkg_count = count;
 

@@ -1,4 +1,4 @@
-CONFIG_CC_FLAGS = -Wall -Wextra -g
+CONFIG_CC_FLAGS = -Wall -Wextra -g -std=c89
 
 # Uncomment for {Net,Open,Free}BSD
 # CONFIG_OS       = -DCONFIG_BSD=1
