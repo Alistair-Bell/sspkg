@@ -4,7 +4,6 @@
 
 static const char *db_name = "master";
 
-
 static int8_t
 pkg_install(struct args_data *args)
 {

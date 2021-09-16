@@ -33,14 +33,10 @@ db_open(struct db *db, const char *name, const char *md)
 			return -1;
 		}
 		case -2: {
-			fprintf(stdout, "sspkg: error specified database is a directory, a file is required.\n");
-			return -1;
-		}
-		case -3: {
 			fprintf(stdout, "sspkg: error unable to retrive current uid groups, cannot validate correct permissions.\n");
 			return -1;
 		}
-		case -4: {
+		case -3: {
 			fprintf(stdout, "sspkg: error cannot read/write to database %s, all permission checks failed, check you have correct access rights!\n", buff);
 			return -1;
 		}
@@ -102,8 +98,9 @@ db_write(struct db *db, struct pkg *write, uint32_t count)
 	
 	if (res == 0) {
 		fprintf(stdout, "sspkg: error unable to write to database %s, writing errors have occured, code %d!\n", db->name, ferror(db->ref));
+		return -1;
 	}
-	return 1;
+	return 0;
 }
 void 
 db_close(struct db *db)
