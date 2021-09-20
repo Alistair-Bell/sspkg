@@ -21,11 +21,11 @@
 
 /* Path where files are stored. This is different depending on os */
 #if CONFIG_BSD
-	#define DB_PATH "/var/db/sspkg-db/"
-	#define DB_PATH_LEN 17
+	#define DB_PATH "/var/db/sspkg-db"
+	#define DB_PATH_LEN 16
 #else
-	#define DB_PATH "/var/lib/sspkg-db/"
-	#define DB_PATH_LEN 18
+	#define DB_PATH "/var/lib/sspkg-db"
+	#define DB_PATH_LEN 17
 #endif
 
 

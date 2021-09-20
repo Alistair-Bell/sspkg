@@ -9,6 +9,6 @@
 #define perms_valid_write(x) perms_valid(x, S_IWRITE, S_IWGRP, S_IWOTH)
 
 /* Checks if the runner has access to the file, uses bitmasks. */
-int8_t perms_valid(const char *, const uint16_t, const uint16_t, const uint16_t);
+int8_t perms_valid(struct stat *, const uint16_t, const uint16_t, const uint16_t);
 
 #endif

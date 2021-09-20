@@ -1,6 +1,6 @@
 include config.mk
 
-SOURCES          = src/main.c src/args.c src/db.c src/perms.c
+SOURCES          = src/main.c src/db.c src/perms.c src/bootstrap.c
 OBJECTS          = ${SOURCES:.c=.o}
 OUT              = sspkg
 
@@ -22,5 +22,5 @@ uninstall:
 	rm /usr/local/bin/${OUT}
 
 clean:
-	rm ${OUT}
 	rm src/*.o
+	rm ${OUT}

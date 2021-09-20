@@ -1,16 +1,10 @@
 #include "perms.h"
 
 int8_t
-perms_valid(const char *path, const uint16_t owm, const uint16_t grm, const uint16_t otm)
+perms_valid(struct stat *sbuff, const uint16_t owm, const uint16_t grm, const uint16_t otm)
 {
-	struct stat s;
-	/* Validate that stat actually worked. */
-	if (stat(path, &s) != 0) {
-		return -1;
-	}
-
 	/* Handy var. */
-	register mode_t m = s.st_mode;
+	register mode_t m = sbuff->st_mode;
 
 	/* Firstly validate that others can access using the mask. */
 	if (~m & otm) {
@@ -18,7 +12,7 @@ perms_valid(const char *path, const uint16_t owm, const uint16_t grm, const uint
 		uid_t uid = getuid();
 
 		/* Check that the uid of the current uid owns the file and has perms. */
-		if (uid == s.st_uid && m & owm) {
+		if (uid == sbuff->st_uid && m & owm) {
 			return 0;	
 		}
 
@@ -29,7 +23,7 @@ perms_valid(const char *path, const uint16_t owm, const uint16_t grm, const uint
 		}
 		
 		/* Returns -3 on all checks have failed. */
-		return (pw->pw_gid == s.st_gid && m & grm) ? 0 : -3;
+		return (pw->pw_gid == sbuff->st_gid && m & grm) ? 0 : -3;
 	}
 	return 0;
 }
