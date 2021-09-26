@@ -36,13 +36,14 @@ option_list(void)
 	if (db_read(&database, &packages, &count) < 0) {
 		return -1;
 	}
-	fprintf(stdout, "sspkg: database %s yield %u packages\n", database.name, count);
+	fprintf(stdout, "sspkg: database %s yields %u package(s).\n\n", database.name, count);
 	/* This prints the package in reverse. */
 	while (count != 0) {
 		struct pkg *ref = &packages[count - 1];
-		fprintf(stdout, "name:   %s\ndesc:  %s\nauthor: %s\n", ref->name, ref->desc, ref->author);
+		fprintf(stdout, "name:   %s\ndesc:   %s\nauthor: %s\n", ref->name, ref->desc, ref->author);
 		--count;
 	}
+	free(packages);
 	return 0;
 }
 

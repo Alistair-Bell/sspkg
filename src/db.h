@@ -37,8 +37,8 @@ struct pkg {
 	uint32_t     ver;
 	uint16_t     license;
 	uint16_t     arch;
-	char         name[15];
-	char         desc[30];
+	char         name[20];
+	char         desc[60];
 	char         author[30];
 };
 

@@ -8,12 +8,14 @@ OUT              = sspkg
 CONFIG_CC_FLAGS  := ${CONFIG_CC_FLAGS} ${CONFIG_OS}
 
 .c.o:
-	$(CC) -c ${CONFIG_CC_FLAGS} $< -o $@
+	@echo "cc   $@"
+	@$(CC) -c ${CONFIG_CC_FLAGS} $< -o $@
 
 all: ${OUT} ${BS_OUT}
 
 ${OUT}: ${OBJECTS}
-	$(CC) ${CONFIG_LD_FLAGS} -o $@ ${OBJECTS}
+	@$(CC) ${CONFIG_LD_FLAGS} -o $@ ${OBJECTS}
+	@echo "cc   $@"
 
 install: all
 	install -m755 -s ${OUT} /usr/local/bin

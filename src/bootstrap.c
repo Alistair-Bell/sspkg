@@ -53,6 +53,5 @@ bootstrap(void)
 		}
 	}
 	fprintf(stdout, "sspkg-boostrap: validated directory %s is present, a directory and has correct permissions.\n", DB_PATH);
-
 	return 0;
 }
