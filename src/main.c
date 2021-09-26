@@ -5,7 +5,47 @@
 #include "bootstrap.h"
 
 /* Defines the format in which getopt will parse arguments, also used in `args_msg_help` bsd style. */
-static const char *msg_opts = "Bhilrv";
+static const char *msg_opts = "Bhi:lr:v";
+static const char *target_db = "master";
+static struct db database = { 0 };
+
+static int8_t
+option_install(const char *arg)
+{
+	/* Open the database in readmode . */
+	if (db_open(&database, target_db, "rb") < 0) {
+		return -1;
+	}
+	uint32_t count;
+	struct pkg *packages;
+	if (db_read(&database, &packages, &count) < 0) {
+		return -1;
+	}
+	db_close(&database);
+	free(packages);
+	return 0;
+}
+static int8_t
+option_list(void)
+{
+	/* Open the database in read mode. */	
+	if (db_open(&database, target_db, "rb") < 0) {
+		return -1;
+	}
+	uint32_t count; struct pkg *packages;
+	if (db_read(&database, &packages, &count) < 0) {
+		return -1;
+	}
+	fprintf(stdout, "sspkg: database %s yield %u packages\n", database.name, count);
+	/* This prints the package in reverse. */
+	while (count != 0) {
+		struct pkg *ref = &packages[count - 1];
+		fprintf(stdout, "name:   %s\ndesc:  %s\nauthor: %s\n", ref->name, ref->desc, ref->author);
+		--count;
+	}
+	return 0;
+}
+
 
 static void
 args_msg_help(void)
@@ -28,16 +68,21 @@ args_parse(int32_t argc, char *const *argv)
 				return -2;
 			}
 			case 'i': {
-				
+				option_install(optarg);
+				break;
 			}
 			case 'l': {
-
+				return option_list();
 			}
 			case 'r': {
-
+				break;
 			}
 			case 'v': {
-
+				break;
+			}
+			default: {
+				fprintf(stderr, "sspkg: error unknown or invalid usage of flag -%c, refer to -h for program usage.\n", optopt);
+				return -1;
 			}
 		}
 	}

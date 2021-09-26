@@ -3,7 +3,7 @@
 /* Defines the file privilage bits, root has rwx whilst others have r-- for non root database searches and package info. */
 static const uint32_t file_perms = 0x1e4;
 /* Defines the desired perms for a directory, this includes the most significent being active (for directory). */
-static const uint32_t dir_perms  = 0x41e4;
+static const uint32_t dir_perms  = 0x41ed;
 
 static int8_t 
 handle_dir(const char *path)

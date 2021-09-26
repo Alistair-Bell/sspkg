@@ -13,7 +13,7 @@ CONFIG_CC_FLAGS  := ${CONFIG_CC_FLAGS} ${CONFIG_OS}
 all: ${OUT} ${BS_OUT}
 
 ${OUT}: ${OBJECTS}
-	$(CC) -o $@ ${OBJECTS}
+	$(CC) ${CONFIG_LD_FLAGS} -o $@ ${OBJECTS}
 
 install: all
 	install -m755 -s ${OUT} /usr/local/bin

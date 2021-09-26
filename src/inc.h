@@ -1,5 +1,5 @@
-#ifndef SS_INC_H
-#define SS_INC_H
+#ifndef SSPKG_INC_H
+#define SSPKG_INC_H
 
 #include <sys/types.h>
 #include <sys/stat.h>
