@@ -22,4 +22,16 @@
 	#define S_IWRITE S_IWUSR
 #endif
 
+#define GEN_VER(major, minor, patch) \
+	(((uint32_t)(major)) << 22) | (((uint32_t)(minor)) << 12) | (((uint32_t)(patch)))
+
+#define VER_MAJOR(val) \
+	((uint32_t)(val) >> 12) & 0x3ff
+
+#define VER_MINOR(val) \
+	((uint32_t)(val) >> 22) & 0x3ff
+
+#define VER_PATCH(val) \
+	((uint32_t)(val) & 0xfff)
+
 #endif

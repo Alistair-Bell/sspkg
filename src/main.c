@@ -40,7 +40,7 @@ option_list(void)
 	/* This prints the package in reverse. */
 	while (count != 0) {
 		struct pkg *ref = &packages[count - 1];
-		fprintf(stdout, "name:   %s\ndesc:   %s\nauthor: %s\n", ref->name, ref->desc, ref->author);
+		fprintf(stdout, "name:    %s\ndesc:    %s\nauthor:  %s\nversion: %d.%d.%d\n", ref->name, ref->desc, ref->author, VER_MAJOR(ref->ver), VER_MINOR(ref->ver), VER_PATCH(ref->ver));
 		--count;
 	}
 	free(packages);
