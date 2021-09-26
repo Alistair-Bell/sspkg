@@ -23,7 +23,7 @@
 struct db_header {
 	char magic[8];
 	uint32_t ver;
-	uint32_t pkg_count;
+	uint32_t count;
 };
 
 /* Object handle to the database. */

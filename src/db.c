@@ -64,13 +64,13 @@ db_read(struct db *db, struct pkg **out, uint32_t *count)
 	}
 
 	/* Use maths to validate the package count matches the amount of bytes within the files, invalid amount of bytes may mean corruption. */
-	if ((db->header.pkg_count * sizeof(struct pkg)) + sizeof(db->header) != size) {
+	if ((db->header.count * sizeof(struct pkg)) + sizeof(db->header) != size) {
 		fprintf(stderr, "sspkg: error database %s has invalid byte count, data may be damaged or corrupted, run boostrap to restore!\n", db->name);
 		return -1;
 	}
 
 	/* When all checks are correct allcate the `out` memory and set the `count` variable. Read the package data. */
-	*count  = db->header.pkg_count;
+	*count  = db->header.count;
 	*out    = (struct pkg *)malloc(sizeof(struct pkg) * (*count));
 	/* Seek past the database header. */
 	fseek(db->ref, sizeof(db->header), SEEK_SET);

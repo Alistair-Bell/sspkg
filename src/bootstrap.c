@@ -10,7 +10,16 @@ handle_dir(const char *path)
 {
 	if (mkdir(path, file_perms) != 0) {
 		register int snapshot = errno;	
-		fprintf(stdout, "sspkg-boostrap, unable to create directory %s, error code %d\n", path, snapshot);
+		/* Handle snapshot for more verbose errors. */
+		switch (snapshot) {
+			case ENOENT: {
+				fprintf(stderr, "sspkg-boostrap: error unable to create directory %s, does parent directory exist?\n", path);
+				return -1;
+			}
+			default: {
+				fprintf(stderr, "sspkg-boostrap: error unable to create directory %s, error code %d\n", path, snapshot);
+			}
+		}
 		return -1;
 	}
 	return 0;
