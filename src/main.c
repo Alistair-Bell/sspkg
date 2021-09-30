@@ -45,7 +45,7 @@ option_list(void)
 		/* Print the license, validate that it is has a matching value within the index. */
 		if (ref->license < ARRAY_LEN(license_table)) {
 			/* Print out the license from the table and then the version. */
-			fprintf(stdout, "license: %s revision %d.%d\n", license_table[ref->license], ref->license_ver & 0xff, (ref->license_ver & 0xff00) >> 8);
+			fprintf(stdout, "license: %s version %d.%d\n", license_table[ref->license], ref->license_ver & 0xff, (ref->license_ver & 0xff00) >> 8);
 		} else {
 			/* Display license as unknown. */
 			fprintf(stdout, "license: unknown, not resolvable\n");
