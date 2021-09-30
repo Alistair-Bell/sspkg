@@ -34,4 +34,6 @@
 #define VER_PATCH(val) \
 	((uint32_t)(val) & 0xfff)
 
+#define ARRAY_LEN(x) sizeof(x) / sizeof(x[0])
+
 #endif

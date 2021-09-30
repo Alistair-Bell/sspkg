@@ -58,7 +58,7 @@ db_read(struct db *db, struct pkg **out, uint32_t *count)
 	fread(&db->header, 1, sizeof(db->header), db->ref);
 	
 	/* Validate the header. */
-	if (strncmp(db->header.magic, DB_MAGIC_BYTES, 7) != 0) {
+	if (strncmp(db->header.magic, DB_MAGIC_BYTES, 8) != 0) {
 		fprintf(stderr, "sspkg: error database %s's magic bytes are incorrect, file may be damaged or corrupted, run boostrap to restore!\n", db->name);
 		return -1;
 	}

@@ -3,6 +3,7 @@
 #include "inc.h"
 #include "db.h"
 #include "bootstrap.h"
+#include "licenses.h"
 
 /* Defines the format in which getopt will parse arguments, also used in `args_msg_help` bsd style. */
 static const char *msg_opts = "Bhi:lr:v";
@@ -41,12 +42,19 @@ option_list(void)
 	while (count != 0) {
 		struct pkg *ref = &packages[count - 1];
 		fprintf(stdout, "name:    %s\ndesc:    %s\nauthor:  %s\nversion: %d.%d.%d\n", ref->name, ref->desc, ref->author, VER_MAJOR(ref->ver), VER_MINOR(ref->ver), VER_PATCH(ref->ver));
+		/* Print the license, validate that it is has a matching value within the index. */
+		if (ref->license < ARRAY_LEN(license_table)) {
+			/* Print out the license from the table and then the version. */
+			fprintf(stdout, "license: %s revision %d.%d\n", license_table[ref->license], ref->license_ver & 0xff, (ref->license_ver & 0xff00) >> 8);
+		} else {
+			/* Display license as unknown. */
+			fprintf(stdout, "license: unknown, not resolvable\n");
+		}
 		--count;
 	}
 	free(packages);
 	return 0;
 }
-
 
 static void
 args_msg_help(void)

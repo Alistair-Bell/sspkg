@@ -36,6 +36,7 @@ struct db {
 struct pkg {
 	uint32_t     ver;
 	uint16_t     license;
+	uint16_t     license_ver;
 	char         name[20];
 	char         desc[60];
 	char         author[30];
